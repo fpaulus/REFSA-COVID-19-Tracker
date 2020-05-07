@@ -20,7 +20,7 @@ covid_data <- read.csv("https://opendata.ecdc.europa.eu/covid19/casedistribution
 
 # Convert table in usable format
 # Convert date columns to a "requests" key, freq is the value
-mobi_t <- gather(data = mobi, key = date, value = requests, `2020-01-13`:`2020-05-02`)
+mobi_t <- gather(data = mobi, key = date, value = requests, 5:ncol(mobi))
 
 # Filter table for Malaysia and Singapore only
 regions <- c("Malaysia", "Singapore")
@@ -28,7 +28,7 @@ mobi_t_m <- filter(mobi_t,region %in% regions & transportation_type == "driving"
 
 # Plot data upfront
 mobi_plot <- ggplot(data = mobi_t_m) + 
-  geom_line(aes(x = as.Date(date, tryformats = c("%Y-%m-%d")), y = requests, group = region)) + 
+  geom_line(aes(x = ymd(date), y = requests, group = region)) + 
   scale_x_date(NULL, breaks = "2 weeks", date_labels = "%d-%b") +
   geom_hline(yintercept = 100) +
   facet_wrap(~ region, nrow = 1) + 
