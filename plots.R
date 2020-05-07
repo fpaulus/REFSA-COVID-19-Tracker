@@ -40,8 +40,9 @@ mobi_plot <- ggplot(data = mobi_t_m) +
 # Save the plots to PNG
 ggsave("RoutingRequestsMCO.png", plot = mobi_plot, device = "png")
 
-# Filter COVID-19 data for Malaysia
-covid_data_m <- filter(covid_data, countriesAndTerritories == "Malaysia")
+# Filter COVID-19 data for Malaysia, Belgium & Singapore
+geo_ids <- c("MY", "BE", "SG", "UK")
+covid_data_m <- filter(covid_data, geoId %in% geo_ids)
 
 # Convert string date to Date
 covid_data_MYd <- covid_data_m %>% mutate(date = dmy(dateRep))
@@ -50,8 +51,11 @@ covid_data_MYd <- covid_data_m %>% mutate(date = dmy(dateRep))
 covid_data_MYd <- arrange(covid_data_MYd, date)
 
 # Calculate cumulative number of cases and deaths
-covid_data_MYd <- covid_data_MYd %>% mutate(cumCases = cumsum(cases))
+covid_data_MYd <- covid_data_MYd %>% group_by(geoId) %>% mutate(cumCases = cumsum(cases))
+covid_data_MYd <- covid_data_MYd %>% group_by(geoId) %>% mutate(cumDeaths = cumsum(deaths))
 
 # Plot MY COVID-19 cases
-covid_my_plot <- ggplot(data = covid_data_MYd) + geom_line(aes(x = date, y = cumCases, group = countriesAndTerritories))
+covid_my_plot <- ggplot(data = covid_data_MYd) + 
+  geom_line(aes(x = date, y = cumCases, color = geoId), linetype = "dashed") +
+  geom_line(aes(x = date, y = cumDeaths, color = geoId))
 covid_my_plot
