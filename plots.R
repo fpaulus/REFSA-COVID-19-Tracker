@@ -5,6 +5,7 @@
 library(tidyverse)
 library(ggplot2)
 library(scales)
+library(lubridate)
 
 # Load REFSA logo
 refsa_logo <- png::readPNG("Logo.png")
@@ -39,6 +40,18 @@ mobi_plot <- ggplot(data = mobi_t_m) +
 # Save the plots to PNG
 ggsave("RoutingRequestsMCO.png", plot = mobi_plot, device = "png")
 
+# Filter COVID-19 data for Malaysia
+covid_data_m <- filter(covid_data, countriesAndTerritories == "Malaysia")
 
+# Convert string date to Date
+covid_data_MYd <- covid_data_m %>% mutate(date = dmy(dateRep))
 
+# Sort rows in ascending order (by Date)
+covid_data_MYd <- arrange(covid_data_MYd, date)
 
+# Calculate cumulative number of cases and deaths
+covid_data_MYd <- covid_data_MYd %>% mutate(cumCases = cumsum(cases))
+
+# Plot MY COVID-19 cases
+covid_my_plot <- ggplot(data = covid_data_MYd) + geom_line(aes(x = date, y = cumCases, group = countriesAndTerritories))
+covid_my_plot
