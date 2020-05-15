@@ -1,7 +1,7 @@
 ---
 title: "REFSA COVID-19 Tracker"
 author: "Frederik Paulus"
-date: "2020-05-07"
+date: "2020-05-15"
 output: 
   html_document: 
     keep_md: true
@@ -23,7 +23,7 @@ refsa_logo <- png::readPNG("Logo.png")
 
 # Apple Mobility Trends: https://www.apple.com/covid19/mobility
 # mobi <- read.csv("https://covid19-static.cdn-apple.com/covid19-mobility-data/2007HotfixDev48/v2/en-us/applemobilitytrends-2020-05-04.csv", na.strings = "", fileEncoding = "UTF-8-BOM")
-mobi <- read_csv("applemobilitytrends-2020-05-02.csv")
+mobi <- read_csv("applemobilitytrends-2020-05-12.csv")
 
 # ECDC Covid-19 cases: https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-distribution-covid-19-cases-worldwide
 covid_data <- read.csv("https://opendata.ecdc.europa.eu/covid19/casedistribution/csv", na.strings = "", fileEncoding = "UTF-8-BOM")
@@ -38,10 +38,14 @@ This tracker pulls together the latest COVID-19 data focusing on Malaysia and so
 
 The peak of cases and deaths seems to have been reached in many countries. 
 
-```{r covid-19, echo=FALSE}
+#### Cases and deaths by date
+
+Plotted on a linear scale.
+
+```{r covid-19-linear, echo=FALSE}
 
 # Filter COVID-19 data for Malaysia, Belgium & Singapore
-geo_ids <- c("MY", "SG", "UK")
+geo_ids <- c("MY", "SG", "UK", "BE")
 covid_data_m <- filter(covid_data, geoId %in% geo_ids)
 
 # Convert string date to Date
@@ -56,11 +60,45 @@ covid_data_MYd <- covid_data_MYd %>% group_by(geoId) %>% mutate(cumDeaths = cums
 
 # Plot MY COVID-19 cases
 covid_my_plot <- ggplot(data = covid_data_MYd) + 
-  geom_line(aes(x = date, y = cumCases, color = geoId), linetype = "dashed") +
-  geom_line(aes(x = date, y = cumDeaths, color = geoId))
+  geom_line(aes(x = date, y = cumCases, color = geoId)) +
+  geom_line(aes(x = date, y = cumDeaths, color = geoId), linetype = "dashed")
 covid_my_plot
 
 ```
+
+#### Cases per day since cumulative cases exceeded 5
+
+Plotted on a log scale.
+
+```{r covid-19-log, echo=FALSE}
+
+# Filter days where number of cases exceeds 5 for the first time
+min_date_my <- filter(covid_data_MYd, cumCases > 5 & geoId == "MY") %>% filter(date == min(date)) %>% select(date)
+min_date_sg <- filter(covid_data_MYd, cumCases > 5 & geoId == "SG") %>% filter(date == min(date)) %>% select(date)
+min_date_uk <- filter(covid_data_MYd, cumCases > 5 & geoId == "UK") %>% filter(date == min(date)) %>% select(date)
+min_date_be <- filter(covid_data_MYd, cumCases > 5 & geoId == "BE") %>% filter(date == min(date)) %>% select(date)
+
+# Add a column to the original data frame counting the number of days from the earliest date
+covid_data_my_baseline <- filter(covid_data_MYd, geoId == "MY" & cumCases > 5) %>% mutate(days_since = date - min_date_my$date)
+covid_data_sg_baseline <- filter(covid_data_MYd, geoId == "SG" & cumCases > 5) %>% mutate(days_since = date - min_date_sg$date)
+covid_data_uk_baseline <- filter(covid_data_MYd, geoId == "UK" & cumCases > 5) %>% mutate(days_since = date - min_date_uk$date)
+covid_data_be_baseline <- filter(covid_data_MYd, geoId == "BE" & cumCases > 5) %>% mutate(days_since = date - min_date_be$date)
+
+covid_cases_norm <- covid_data_my_baseline
+covid_cases_norm <- rbind(covid_cases_norm, covid_data_sg_baseline)
+covid_cases_norm <- rbind(covid_cases_norm, covid_data_uk_baseline)
+covid_cases_norm <- rbind(covid_cases_norm, covid_data_be_baseline)
+
+# test plot
+covid_cases_norm_plot <- ggplot(data = covid_cases_norm) +
+  geom_line(aes(x = days_since, y = cumCases, color = geoId)) +
+  scale_y_log10(name = "Cumulative cases", labels = trans_format("identity", math_format(.x))) +
+  scale_x_continuous(name = "Days since cases > 5")
+
+covid_cases_norm_plot
+
+```
+
 
 ### Measures to contain the crisis
 
@@ -91,6 +129,6 @@ mobi_plot
 
 ```
 
-Sources for these charts: 
+Sources for these charts. 
 
 
