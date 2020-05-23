@@ -1,7 +1,7 @@
 ---
 title: "REFSA COVID-19 Tracker"
 author: "Frederik Paulus"
-date: "2020-05-15"
+date: "2020-05-16"
 output: 
   html_document: 
     keep_md: true

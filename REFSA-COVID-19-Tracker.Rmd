@@ -1,7 +1,7 @@
 ---
 title: "REFSA COVID-19 Tracker"
 author: "Frederik Paulus"
-date: "2020-05-15"
+date: "`r format(Sys.time(), '%Y-%m-%d')`"
 output: 
   html_document: 
     keep_md: true
