@@ -1,7 +1,7 @@
 ---
 title: "REFSA COVID-19 Stimulus Tracker"
 author: "Frederik Paulus"
-date: "2020-06-01"
+date: "2020-06-02"
 output: 
   html_document: 
     keep_md: true
@@ -80,19 +80,20 @@ For Malaysia however, a substantial part of the package comes in the form of a l
 
 ![](REFSA-COVID-19-Tracker_files/figure-html/fisc_stim_gdp-1.png)<!-- -->
 
-#### Evolution of stimulus measures over time
-
-
-
 
 #### Stimulus size compared to stringency index
 
+As mentioned higher, it stands to reason that more stringent movement control or safe distancing measures will have a bigger economic impact. Therefore it is interesting to consider whether governments have taken this into account in their stimulus plans. 
+
+The chart below plots the size of the stimulus packages announced to date to the maximum stringency index since the beginning of the observations.
 
 ![](REFSA-COVID-19-Tracker_files/figure-html/stim_stringency-1.png)<!-- -->
 
 
+### Latest changes
+
+* 2020-06-02: Added measures announced in Singapore's "Fortitude" budget. 
+
 ### Data Sources
-
-
 
 

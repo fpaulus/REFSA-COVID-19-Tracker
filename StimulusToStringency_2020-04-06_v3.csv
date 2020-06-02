@@ -1,0 +1,12 @@
+﻿country,iso_code,nom_stimulus,nom_percent_gdp,adj_stimulus,adj_percent_gdp,stringency,gdp
+United Kingdom,UK,481.5,0.1755,481.5,0.1755,71,2744
+France,FR,371.0,0.1339,371.0,0.1339,86,2771
+Singapore,SG,42.0,0.1127,42.0,0.1127,38,373
+Germany,DE,383.0,0.0991,383.0,0.0991,71,3863
+United States,US,2000.0,0.0933,2000.0,0.0933,67,21439
+The Netherlands,NL,70.0,0.0766,70.0,0.0766,86,914
+Malaysia,MY,58.2,0.1533,25.9,0.0680,86,381
+Japan,JP,135.0,0.0249,135.0,0.0249,62,5413
+Indonesia,ID,16.4,0.0137,16.4,0.0137,76,1200
+Italy,IT,26.9,0.0135,26.9,0.0135,90,1989
+China,CN,0.0,0.0000,0.0,0.0000,76,14140

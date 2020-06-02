@@ -25,7 +25,7 @@ refsa_logo <- png::readPNG("Logo.png")
 # ===== Apple Mobility Trends =====
 # https://www.apple.com/covid19/mobility
 # mobi <- read.csv("https://covid19-static.cdn-apple.com/covid19-mobility-data/2007HotfixDev48/v2/en-us/applemobilitytrends-2020-05-04.csv", na.strings = "", fileEncoding = "UTF-8-BOM")
-mobi <- read_csv("applemobilitytrends-2020-05-12.csv")
+mobi <- read_csv("applemobilitytrends-2020-05-31.csv")
 
 # ===== ECDC Covid-19 cases =====
 # https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-distribution-covid-19-cases-worldwide
@@ -68,7 +68,9 @@ covid_data_MYd <- covid_data_MYd %>% group_by(geoId) %>% mutate(cumDeaths = cums
 # Plot MY COVID-19 cases
 covid_my_plot <- ggplot(data = covid_data_MYd) + 
   geom_line(aes(x = date, y = cumCases, color = geoId, group = geoId)) +
-  geom_line(aes(x = date, y = cumDeaths, color = geoId), linetype = "dashed")
+  geom_line(aes(x = date, y = cumDeaths, color = geoId), linetype = "dashed") +
+  scale_y_continuous(name = "Cumulative cases / deaths")
+
 covid_my_plot
 
 ```
@@ -120,16 +122,16 @@ In order to chart this, we currently rely on data provided by Apple, which shows
 
 # Convert table in usable format
 # Convert date columns to a "requests" key, freq is the value
-mobi_t <- gather(data = mobi, key = date, value = requests, 5:ncol(mobi))
+mobi_t <- gather(data = mobi, key = date, value = requests, 7:ncol(mobi))
 
 # Filter table for Malaysia and Singapore only
-regions <- c("Malaysia", "Singapore", "UK")
-mobi_t_m <- filter(mobi_t,region %in% regions & transportation_type == "driving")
+regions <- c("Malaysia", "Singapore", "United Kingdom")
+mobi_t_m <- filter(mobi_t, region %in% regions & transportation_type == "driving")
 
 # Plot data upfront
 mobi_plot <- ggplot(data = mobi_t_m) + 
   geom_line(aes(x = ymd(date), y = requests, group = region)) + 
-  scale_x_date(NULL, breaks = "2 weeks", date_labels = "%d-%b") +
+  scale_x_date(NULL, breaks = "1 month", date_labels = "%d-%b") +
   geom_hline(yintercept = 100) +
   facet_wrap(~ region, nrow = 1) + 
   theme(axis.text.x=element_text(angle = 45, hjust = 1, vjust = 1)) +
@@ -172,6 +174,7 @@ stringency <- read.csv("https://github.com/OxCGRT/covid-policy-tracker/raw/maste
 stringency_plot <- ggplot(data = stringency) + 
   geom_line(aes(x = Date, y = StringencyIndexForDisplay, group = CountryName)) + 
   scale_x_date(NULL, breaks = "1 month", date_labels = "%d-%b") +
+  scale_y_continuous(name = "Stringency Index") +
   facet_wrap(~ CountryName, nrow = 1) + 
   theme(axis.text.x=element_text(angle = 45, hjust = 1, vjust = 1)) +
   labs(title = "Stringency Index", caption = "Source: Hale, Thomas, Sam Webster, Anna Petherick, Toby Phillips, and Beatriz Kira (2020).\n Oxford COVID-19 Government Response Tracker, Blavatnik School of Government. \n Data use policy: Creative Commons Attribution CC BY standard.")
@@ -312,7 +315,7 @@ plot_bar <- plot_base +
   # clean up the chart
   xlab("") + 
   ylab("") + 
-  labs(title = "Announced government* stimulus in % of GDP", subtitle = "Last updated: 6 April 2020.", caption = "* Excludes central bank measures.\n Sources: IMF, Bloomberg, Financial Times, Japan Times, Jakarta Post, REFSA calculations.") + 
+  labs(title = "Announced government* stimulus in % of GDP", subtitle = paste("Last updated: ", format(Sys.time(), '%Y-%m-%d'), sep = ""), caption = "* Excludes central bank measures.\n Sources: IMF, Bloomberg, Financial Times, REFSA calculations.") + 
   theme(axis.line.y = element_blank(), axis.ticks.y = element_blank())
 
 plot_bar
@@ -363,7 +366,7 @@ plot_adj_bar <- plot_adj_base +
   # clean up the chart
   xlab("") + 
   ylab("") + 
-  labs(title = "Announced government* stimulus in % of GDP (adjusted)", subtitle = "Last updated: 6 April 2020.", caption = "* Excludes central bank measures.\n Sources: IMF, Bloomberg, Financial Times, Japan Times, Jakarta Post, REFSA calculations.") + 
+  labs(title = "Announced government* stimulus in % of GDP (adjusted)", subtitle = paste("Last updated: ", format(Sys.time(), '%Y-%m-%d'), sep = ""), caption = "* Excludes central bank measures.\n Sources: IMF, Bloomberg, Financial Times, REFSA calculations.") + 
   theme(axis.line.y = element_blank(), axis.ticks.y = element_blank())
 
 plot_adj_bar
@@ -371,13 +374,12 @@ plot_adj_bar
 
 ```
 
-#### Evolution of stimulus measures over time
-
-
-
 
 #### Stimulus size compared to stringency index
 
+As mentioned higher, it stands to reason that more stringent movement control or safe distancing measures will have a bigger economic impact. Therefore it is interesting to consider whether governments have taken this into account in their stimulus plans. 
+
+The chart below plots the size of the stimulus packages announced to date to the maximum stringency index since the beginning of the observations.
 
 ```{r stim_stringency, echo=FALSE}
 
@@ -404,7 +406,7 @@ ctry_my <- filter(stim_stringency, Country == "Malaysia")
 plot_stringency <- ggplot(data = stim_stringency, aes(x = max_stringency_idx, y = fisc_stim_percent_gdp)) + 
   geom_point(size = 3, color = "#F2CA50") + 
   geom_point(size = 5, shape = 1, data = ctry_my) +
-  labs(title = "Size of stimulus is not proportional to stringency of social distancing", 
+  labs(title = "Size of stimulus relative to maximum stringency index", 
        caption = "SOURCE: REFSA Calculations;\n Hale, Thomas and Samuel Webster (2020). Oxford COVID-19 Government Response Tracker.") + 
   ggrepel::geom_label_repel(aes(label = Country), data = stim_stringency, size = 3) + 
   theme_bw() +
@@ -420,8 +422,10 @@ plot_stringency
 ```
 
 
+### Latest changes
+
+* 2020-06-02: Added measures announced in Singapore's "Fortitude" budget. 
+
 ### Data Sources
-
-
 
 
