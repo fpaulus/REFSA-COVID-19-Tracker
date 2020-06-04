@@ -1,7 +1,7 @@
 ---
 title: "REFSA COVID-19 Stimulus Tracker"
 author: "Frederik Paulus"
-date: "2020-06-02"
+date: "2020-06-04"
 output: 
   html_document: 
     keep_md: true
@@ -94,6 +94,14 @@ The chart below plots the size of the stimulus packages announced to date to the
 
 * 2020-06-02: Added measures announced in Singapore's "Fortitude" budget. 
 
+
 ### Data Sources
+
+* Covid-19 cases and deaths: [European Centre for Disease Prevention and Control](https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-distribution-covid-19-cases-worldwide)
+* Movement data: [Apple Covid-19 Mobility Trends Reports](https://www.apple.com/covid19/mobility)
+* Stringency Index: Hale, Thomas, Sam Webster, Anna Petherick, Toby Phillips, and Beatriz Kira (2020). [Oxford COVID-19 Government Response Tracker](https://www.bsg.ox.ac.uk/research/research-projects/coronavirus-government-response-tracker), Blavatnik School of Government. Data use policy: Creative Commons Attribution CC BY standard.
+* Stimulus Measures: REFSA compilation and calculations
+
+
 
 
