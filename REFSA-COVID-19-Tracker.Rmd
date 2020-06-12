@@ -1,6 +1,6 @@
 ---
 title: "REFSA COVID-19 Stimulus Tracker"
-author: "Frederik Paulus"
+author: "REFSA Research Team"
 date: "`r format(Sys.time(), '%Y-%m-%d')`"
 output: 
   html_document: 
@@ -424,6 +424,7 @@ plot_stringency
 
 ### Latest changes
 
+* 2020-06-12: Added measures announced in Malaysia's "Penjana" package. We categorised all the measures announced here as fiscal measures, for a total of 29.55bn MYR. 
 * 2020-06-02: Added measures announced in Singapore's "Fortitude" budget. 
 
 

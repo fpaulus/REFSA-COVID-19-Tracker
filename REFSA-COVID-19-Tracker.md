@@ -1,7 +1,7 @@
 ---
 title: "REFSA COVID-19 Stimulus Tracker"
-author: "Frederik Paulus"
-date: "2020-06-04"
+author: "REFSA Research Team"
+date: "2020-06-12"
 output: 
   html_document: 
     keep_md: true
@@ -92,6 +92,7 @@ The chart below plots the size of the stimulus packages announced to date to the
 
 ### Latest changes
 
+* 2020-06-12: Added measures announced in Malaysia's "Penjana" package. We categorised all the measures announced here as fiscal measures, for a total of 29.55bn MYR. 
 * 2020-06-02: Added measures announced in Singapore's "Fortitude" budget. 
 
 
