@@ -38,10 +38,10 @@ mobi_plot <- ggplot(data = mobi_t_m) +
                                      width = unit(30, "points"), hjust = 1.1, vjust = 0))
 
 # Save the plots to PNG
-ggsave("RoutingRequestsMCO.png", plot = mobi_plot, device = "png")
+# ggsave("RoutingRequestsMCO.png", plot = mobi_plot, device = "png")
 
 # Filter COVID-19 data for Malaysia, Belgium & Singapore
-geo_ids <- c("MY", "SG", "UK", "BE")
+geo_ids <- c("MY", "SG", "UK", "BE", "US")
 covid_data_m <- filter(covid_data, geoId %in% geo_ids)
 
 # Convert string date to Date
@@ -57,8 +57,7 @@ covid_data_MYd <- covid_data_MYd %>% group_by(geoId) %>% mutate(cumDeaths = cums
 # Plot MY COVID-19 cases
 covid_my_plot <- ggplot(data = covid_data_MYd) + 
   geom_line(aes(x = date, y = cumCases, color = geoId), linetype = "dashed") +
-  geom_line(aes(x = date, y = cumDeaths, color = geoId)) +
-  facet_wrap(~ geoId, nrow = 1)
+  geom_line(aes(x = date, y = cumDeaths, color = geoId))
 covid_my_plot
 
 # Filter days where number of cases exceeds 5 for the first time
@@ -66,17 +65,21 @@ min_date_my <- filter(covid_data_MYd, cumCases > 5 & geoId == "MY") %>% filter(d
 min_date_sg <- filter(covid_data_MYd, cumCases > 5 & geoId == "SG") %>% filter(date == min(date)) %>% select(date)
 min_date_uk <- filter(covid_data_MYd, cumCases > 5 & geoId == "UK") %>% filter(date == min(date)) %>% select(date)
 min_date_be <- filter(covid_data_MYd, cumCases > 5 & geoId == "BE") %>% filter(date == min(date)) %>% select(date)
+min_date_us <- filter(covid_data_MYd, cumCases > 5 & geoId == "US") %>% filter(date == min(date)) %>% select(date)
 
 # Add a column to the original data frame counting the number of days from the earliest date
 covid_data_my_baseline <- filter(covid_data_MYd, geoId == "MY" & cumCases > 5) %>% mutate(days_since = date - min_date_my$date)
 covid_data_sg_baseline <- filter(covid_data_MYd, geoId == "SG" & cumCases > 5) %>% mutate(days_since = date - min_date_sg$date)
 covid_data_uk_baseline <- filter(covid_data_MYd, geoId == "UK" & cumCases > 5) %>% mutate(days_since = date - min_date_uk$date)
 covid_data_be_baseline <- filter(covid_data_MYd, geoId == "BE" & cumCases > 5) %>% mutate(days_since = date - min_date_be$date)
+covid_data_us_baseline <- filter(covid_data_MYd, geoId == "US" & cumCases > 5) %>% mutate(days_since = date - min_date_be$date)
 
+# Should have left a note here explaining what this does... 
 covid_cases_norm <- covid_data_my_baseline
 covid_cases_norm <- rbind(covid_cases_norm, covid_data_sg_baseline)
 covid_cases_norm <- rbind(covid_cases_norm, covid_data_uk_baseline)
 covid_cases_norm <- rbind(covid_cases_norm, covid_data_be_baseline)
+covid_cases_norm <- rbind(covid_cases_norm, covid_data_us_baseline)
 
 # test plot
 covid_cases_norm_plot <- ggplot(data = covid_cases_norm) +
