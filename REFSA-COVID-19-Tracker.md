@@ -1,7 +1,7 @@
 ---
 title: "REFSA COVID-19 Stimulus Tracker"
 author: "REFSA Research Team"
-date: "2020-06-12"
+date: "2020-09-15"
 output: 
   html_document: 
     keep_md: true
